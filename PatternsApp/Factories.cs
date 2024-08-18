@@ -10,12 +10,11 @@ namespace PatternsApp
     public class FactoryPerson
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     public class PersonFactory
     {
-        //public List<FactoryPerson> FactoryList = new List<FactoryPerson>();
         public FactoryPerson[] FactoryList = new FactoryPerson[0];
 
         public FactoryPerson CreatePerson(string name)
@@ -29,6 +28,7 @@ namespace PatternsApp
                 FactoryList[i] = temt[i];
             }
             FactoryList[personsCount] = factoryPerson;
+            
             return factoryPerson;
         }
     }
