@@ -14,14 +14,8 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
         static void Main(string[] args)
         {
-            var pf = new PersonFactory();
-
-            for (int i = 0; i < 10; i++)
-            {
-                var person = pf.CreatePerson("user");
-            }
-
-            Console.ReadLine();
+            var b = new PersonFBuilder();
+            var p = b.Called("Name").WorksAsA("Tester").Build() ;
         }
 
 

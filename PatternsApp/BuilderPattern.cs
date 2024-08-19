@@ -188,70 +188,6 @@ namespace PatternsApp
 
     #region singleBuilderForTask
 
-    public class SharpElement
-    {
-        public string Value = string.Empty, Type = string.Empty;
-
-        public List<SharpElement> Elements = new List<SharpElement>();
-
-        public SharpElement()
-        {
-        }
-
-        public SharpElement(string value, string type)
-        {
-            Value = value;
-            Type = type;
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("public class " + Value + Environment.NewLine + "{" + Environment.NewLine);
-
-            foreach (var element in Elements)
-            {
-                sb.Append("  public " + element.Type + " " + element.Value + ";" + Environment.NewLine);
-            }
-
-            sb.Append("}");
-            return sb.ToString();
-        }
-
-        public static CodeBuilder1 Create(string name)
-        {
-            return new CodeBuilder1(name);
-        }
-    }
-
-    public class CodeBuilder1
-    {
-        private readonly string rootName;
-        protected SharpElement root = new SharpElement();
-
-        public CodeBuilder1(string rootName)
-        {
-            this.rootName = rootName;
-            root.Value = rootName;
-        }
-
-        public CodeBuilder1 AddField(string childValue, string childType)
-        {
-            root.Elements.Add(new SharpElement(childValue, childType));
-            return this;
-        }
-
-        public override string ToString()
-        {
-            return root.ToString();
-        }
-
-        public static implicit operator SharpElement(CodeBuilder1 builder)
-        {
-            return builder.root;
-        }
-    }
-
     public class CodeElement
     {
         public string ClassName;
@@ -276,8 +212,6 @@ namespace PatternsApp
         }
     }
 
-
-
     public class CodeBuilder
     {
         protected CodeElement root = new CodeElement();
@@ -299,9 +233,113 @@ namespace PatternsApp
         }
     }
 
+    #endregion
+
+    #region RecursiveGenericsInheritanceForBuilders
+    public class PersonG
+    {
+        public string Name;
+        public string Position;
+
+        public class BuilderLastClass : PersonGJobBuilder<BuilderLastClass>
+        {
+
+        }
+
+        public static BuilderLastClass New()
+        {
+            return new BuilderLastClass();
+        }
+    }
+
+    public abstract class PersonGBuilder
+    {
+        public PersonG personG = new PersonG();
+
+        public PersonG Build()
+        {
+            return personG;
+        }
+    }
+
+    public class PersonGInfoBuilder<SELF> : PersonGBuilder where SELF : PersonGInfoBuilder<SELF>
+    {
+        public SELF Called(string name)
+        {
+            personG.Name = name;
+            return (SELF)this;
+        }
+    }
+
+    public class PersonGJobBuilder<SELF> : PersonGInfoBuilder<SELF> where SELF : PersonGJobBuilder<SELF>
+    {
+        public SELF WorkAs(string position)
+        {
+            personG.Position = position;
+            return (SELF)this;
+        }
+    }
+
+    // var personMe = PersonG.New().Called("Name").WorkAs("Admin").Build();
 
 
     #endregion
+
+    #region FunctionalBuilderForOpenClosePrincipal
+
+    public class PersonF
+    {
+        public string Name, Position;
+    }
+
+    public abstract class FunctionalBuilder<TSubject, TSelf> where TSelf : FunctionalBuilder<TSubject, TSelf> where TSubject : new()
+    {
+        private readonly List<Func<TSubject, TSubject>> actions
+       = new List<Func<TSubject, TSubject>>();
+
+        public TSelf Do(Action<TSubject> action)
+        {
+            return AddAction(action);
+        }
+
+        private TSelf AddAction(Action<TSubject> action)
+        {
+            actions.Add(p =>
+            {
+                action(p);
+                return p;
+            });
+
+            return (TSelf)this;
+        }
+
+        public TSubject Build()
+        {
+            return actions.Aggregate(new TSubject(), (p, f) => f(p));
+        }
+    }
+
+    public sealed class PersonFBuilder : FunctionalBuilder<PersonF, PersonFBuilder>
+    {
+        public PersonFBuilder Called(string name)
+        {
+            return Do(p => p.Name = name);
+        }
+    }
+
+    public static class PersonBuilderExtensions
+    {
+        public static PersonFBuilder WorksAsA
+          (this PersonFBuilder builder, string position)
+        {
+            builder.Do(p => p.Position = position);
+            return builder;
+        }
+    }
+
+
+    #endregion
+
 
 }
 

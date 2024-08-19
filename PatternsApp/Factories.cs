@@ -7,6 +7,8 @@ using System.Linq;
 
 namespace PatternsApp
 {
+
+    #region lessonTask
     public class FactoryPerson
     {
         public int Id { get; set; }
@@ -28,10 +30,28 @@ namespace PatternsApp
                 FactoryList[i] = temt[i];
             }
             FactoryList[personsCount] = factoryPerson;
-            
+
             return factoryPerson;
         }
     }
+    #endregion
 
+    public class Point
+    {
+        public int X, Y;
+    }
 
+    public class Line
+    {
+        public Point Start, End;
+
+        public Line DeepCopy()
+        {
+            return new Line()
+            {
+                Start = this.Start,
+                End = this.End,
+            };
+        }
+    }
 }
