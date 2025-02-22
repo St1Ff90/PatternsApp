@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace PatternsApp
+namespace PatternsAppFactories
 {
 
     #region lessonTask
@@ -17,41 +17,85 @@ namespace PatternsApp
 
     public class PersonFactory
     {
-        public FactoryPerson[] FactoryList = new FactoryPerson[0];
+        private int i = 0;
 
         public FactoryPerson CreatePerson(string name)
         {
-            int personsCount = FactoryList.Length;
-            FactoryPerson factoryPerson = personsCount != 0 ? new FactoryPerson() { Name = name, Id = personsCount } : new FactoryPerson() { Name = name, Id = 0 };
-            var temt = FactoryList;
-            FactoryList = new FactoryPerson[personsCount + 1];
-            for (int i = 0; i < temt.Length; i++)
-            {
-                FactoryList[i] = temt[i];
-            }
-            FactoryList[personsCount] = factoryPerson;
-
-            return factoryPerson;
+            return new FactoryPerson { Id = i++, Name = name };
         }
     }
     #endregion
 
     public class Point
     {
-        public int X, Y;
-    }
+        private double x, y;
 
-    public class Line
-    {
-        public Point Start, End;
-
-        public Line DeepCopy()
+        protected Point(double x, double y)
         {
-            return new Line()
+            this.x = x;
+            this.y = y;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(x)}: {x}, {nameof(y)}: {y}";
+        }
+
+        public Point(double a,
+          double b, // names do not communicate intent
+          CoordinateSystem cs = CoordinateSystem.Cartesian)
+        {
+            switch (cs)
             {
-                Start = this.Start,
-                End = this.End,
-            };
+                case CoordinateSystem.Polar:
+                    x = a * Math.Cos(b);
+                    y = a * Math.Sin(b);
+                    break;
+                default:
+                    x = a;
+                    y = b;
+                    break;
+            }
+
+            // steps to add a new system
+            // 1. augment CoordinateSystem
+            // 2. change ctor
+        }
+
+        // factory method
+
+        public static Point NewCartesianPoint(double x, double y) //Factory method
+        {
+            return new Point(x, y);
+        }
+
+        public static Point NewPolarPoint(double rho, double theta) //Factory method
+        {
+            return new Point(rho * Math.Cos(theta), rho * Math.Sin(theta));
+        }
+
+        public enum CoordinateSystem
+        {
+            Cartesian,
+            Polar
+        }
+
+        // make it lazy
+        public static class Factory
+        {
+            public static Point NewCartesianPoint(double x, double y)
+            {
+                return new Point(x, y);
+            }
         }
     }
+
+    class PointFactory
+    {
+        public static Point NewCartesianPoint(float x, float y)
+        {
+            return new Point(x, y); // needs to be public
+        }
+    }
+
 }
