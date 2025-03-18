@@ -98,7 +98,7 @@ namespace PatternsApp
 
     #region ManyBuilders
 
-    public class Person
+    public class PersonBuilder
     {
         public string StreetAdress = string.Empty, Postcode = string.Empty, City = string.Empty;
         public string CompanyName = string.Empty, Position = string.Empty;
@@ -112,15 +112,15 @@ namespace PatternsApp
         }
     }
 
-    public class PersonBuilder
+    public class PersonFromBuilder
     {
-        protected Person person;
+        protected PersonBuilder person;
 
-        public PersonBuilder()
+        public PersonFromBuilder()
         {
-            person = new Person();
+            person = new PersonBuilder();
         }
-        public PersonBuilder(Person person)
+        public PersonFromBuilder(PersonBuilder person)
         {
             this.person = person;
         }
@@ -129,15 +129,15 @@ namespace PatternsApp
 
         public PersonJobBuilder Works() { return new PersonJobBuilder(person); }
 
-        public static implicit operator Person(PersonBuilder pb)
+        public static implicit operator PersonBuilder(PersonFromBuilder pb)
         {
             return pb.person;
         }
     }
 
-    public class PersonAdressBuilder : PersonBuilder
+    public class PersonAdressBuilder : PersonFromBuilder
     {
-        public PersonAdressBuilder(Person person) : base(person)
+        public PersonAdressBuilder(PersonBuilder person) : base(person)
         {
         }
 
@@ -160,9 +160,9 @@ namespace PatternsApp
         }
     }
 
-    public class PersonJobBuilder : PersonBuilder
+    public class PersonJobBuilder : PersonFromBuilder
     {
-        public PersonJobBuilder(Person person) : base(person)
+        public PersonJobBuilder(PersonBuilder person) : base(person)
         {
         }
 

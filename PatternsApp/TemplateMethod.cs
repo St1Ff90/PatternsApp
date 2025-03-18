@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PatternsApp
 {
-    public class Creature
+    public class CreatureTemplate
     {
         public int Attack, Health;
 
-        public Creature(int attack, int health)
+        public CreatureTemplate(int attack, int health)
         {
             Attack = attack;
             Health = health;
@@ -19,9 +19,9 @@ namespace PatternsApp
 
     public abstract class CardGame
     {
-        public Creature[] Creatures;
+        public CreatureTemplate[] Creatures;
 
-        public CardGame(Creature[] creatures)
+        public CardGame(CreatureTemplate[] creatures)
         {
             Creatures = creatures;
         }
@@ -29,8 +29,8 @@ namespace PatternsApp
         // returns -1 if no clear winner (both alive or both dead)
         public int Combat(int creature1, int creature2)
         {
-            Creature first = Creatures[creature1];
-            Creature second = Creatures[creature2];
+            CreatureTemplate first = Creatures[creature1];
+            CreatureTemplate second = Creatures[creature2];
             Hit(first, second);
             Hit(second, first);
             bool firstAlive = first.Health > 0;
@@ -40,24 +40,24 @@ namespace PatternsApp
         }
 
         // attacker hits other creature
-        protected abstract void Hit(Creature attacker, Creature other);
+        protected abstract void Hit(CreatureTemplate attacker, CreatureTemplate other);
     }
 
     public class TemporaryCardDamageGame : CardGame
     {
         private int cretureHelth;
 
-        public TemporaryCardDamageGame(Creature[] creatures) : base(creatures)
+        public TemporaryCardDamageGame(CreatureTemplate[] creatures) : base(creatures)
         {
             Console.WriteLine("total is " + creatures.Length);
             int i = 1;
-            foreach (Creature creature in creatures)
+            foreach (CreatureTemplate creature in creatures)
             {
                 Console.WriteLine("creature " + i + " with health " + creature.Health.ToString() + " and atack " + creature.Health.ToString());
             }
         }
 
-        protected override void Hit(Creature attacker, Creature other)
+        protected override void Hit(CreatureTemplate attacker, CreatureTemplate other)
         {
             Console.WriteLine("Try Hit");
         }
@@ -65,12 +65,12 @@ namespace PatternsApp
 
     public class PermanentCardDamage : CardGame
     {
-        public PermanentCardDamage(Creature[] creatures) : base(creatures)
+        public PermanentCardDamage(CreatureTemplate[] creatures) : base(creatures)
         {
         }
 
         // todo
-        protected override void Hit(Creature attacker, Creature other)
+        protected override void Hit(CreatureTemplate attacker, CreatureTemplate other)
         {
             throw new NotImplementedException();
         }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Dynamic;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using ImpromptuInterface;
 using PatternsApp;
 using static System.Console;
-using static PatternsApp.Person;
+using static PatternsApp.PersonBuilder;
 
 namespace PatternsApp // Note: actual namespace depends on the project name.
 {
@@ -43,17 +44,32 @@ namespace PatternsApp // Note: actual namespace depends on the project name.
 
         static void Main(string[] args)
         {
-            MagicSquareGenerator magicSquareGenerator = new MagicSquareGenerator();
 
-            magicSquareGenerator.Generate(3);
+            var game = new Game();
+            var goblin = new Goblin(game);
+            game.Creatures.Add(goblin);
+            var goblin2 = new Goblin(game);
+            game.Creatures.Add(goblin2);
+            var dsdsd = (goblin.Attack, goblin.Defense);
+
+            var goblin3 = new GoblinKing(game);
+            game.Creatures.Add(goblin3);
+            dsdsd = (goblin.Attack, goblin.Defense);
 
 
 
+            DotNetDesignPatternDemos.Behavioral.ChainOfResponsibility.MethodChain.Demo sd  = new DotNetDesignPatternDemos.Behavioral.ChainOfResponsibility.MethodChain.Demo();
+
+            sd.Start();
         }
 
 
 
 
-
     }
+
+
+
+
+
 }
