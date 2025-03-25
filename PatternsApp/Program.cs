@@ -45,22 +45,10 @@ namespace PatternsApp // Note: actual namespace depends on the project name.
         static void Main(string[] args)
         {
 
-            var game = new Game();
-            var goblin = new Goblin(game);
-            game.Creatures.Add(goblin);
-            var goblin2 = new Goblin(game);
-            game.Creatures.Add(goblin2);
-            var dsdsd = (goblin.Attack, goblin.Defense);
-
-            var goblin3 = new GoblinKing(game);
-            game.Creatures.Add(goblin3);
-            dsdsd = (goblin.Attack, goblin.Defense);
-
-
-
-            DotNetDesignPatternDemos.Behavioral.ChainOfResponsibility.MethodChain.Demo sd  = new DotNetDesignPatternDemos.Behavioral.ChainOfResponsibility.MethodChain.Demo();
-
-            sd.Start();
+            var sdsdsds = new ExpressionProcessor();
+            sdsdsds.Variables.Add('x', 1);
+            sdsdsds.Variables.Add('y', 2);
+            int sdss = sdsdsds.Calculate("1");
         }
 
 
